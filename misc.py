@@ -2,8 +2,17 @@ import numpy as np
 
 def init_grid_random(size = 100):
     grid = np.zeros((size,size))
-    num_random_spots = int(size * size * 0.1)  # Adjust the percentage (e.g., 0.1 for 10%)
-    random_index = np.random.choice(size * size, num_random_spots, replace=False)
+    # num_random_spots = int(size * size * 0.15)  # Adjust the percentage (e.g., 0.1 for 10%)
+    num_random_spots = int(size * size * 0.02)  # Adjust the percentage (e.g., 0.15 for 15%)
+    center = size // 2
+    radius = size // 4  # Define a radius around the center
+    potential_indices = [
+        (i, j) for i in range(center - radius, center + radius)
+        for j in range(center - radius, center + radius)
+        if 0 <= i < size and 0 <= j < size
+    ]
+    random_indices = np.random.choice(len(potential_indices), num_random_spots, replace=False)
+    random_index = [np.ravel_multi_index(potential_indices[i], (size, size)) for i in random_indices]
     grid.flat[random_index] = 1
     return grid
 

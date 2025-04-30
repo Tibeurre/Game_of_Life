@@ -1,36 +1,24 @@
-# IMPORTS
-from misc import *
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+from misc import *  # suppose que tu as init_grid_random() et next_step()
+import time
 
-# VARIABLES INITIALIZATION
-is_playing = True
-step = 0
-
-grid = init_grid_random(size = 200)
-
-# INITIALIZE THE GAME FIGURE
-plt.ion()  
+grid = init_grid_random(size = 400)
 fig, ax = plt.subplots()
 img = ax.imshow(grid, cmap='gray', interpolation='nearest')
 plt.axis('off')
-title = ax.set_title(f"Step {step}")
+title = ax.set_title("Step 0")
 
-# GAME LOOP
-while is_playing:
-    grid = next_step(grid).copy()
-    step += 1
-
+def update(frame):
+    global grid
+    grid = next_step(grid)
     img.set_data(grid)
-    title.set_text(f"Step {step}")
-    plt.draw()
-    plt.pause(0.1)  
+    title.set_text(f"Step {frame}")
+    return [img, title]
 
-    if step >= 500:
-        is_playing = False
+ani = animation.FuncAnimation(
+    fig, update, frames=5000, interval=100, blit=True
+)
 
-# END OF GAME
-plt.ioff()
-plt.imshow(grid, cmap='gray', interpolation='nearest')
-plt.title(f"Step {step}")
-plt.axis('off')
-plt.show()
+ani.save(f'game_of_life/Game_of_Life/output/{time.time()}.gif', writer='pillow')
